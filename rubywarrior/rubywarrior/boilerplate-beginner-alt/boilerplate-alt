@@ -1,0 +1,256 @@
+
+
+////////////////////////////////
+// All Available Genes
+// -----------------------------
+//
+// ------------------------
+// look conditionals
+// ------------------------
+A = look_and_health.new(:forward, "Sl", 6)
+B = look_and_health.new(:backward, "Sl", 6)
+C = look_and_health.new(:forward, "Th", 7)
+D = look_and_health.new(:backward, "Th", 7)
+E = look_and_health.new(:forward, "Ar", 6)
+F = look_and_health.new(:backward, "Ar", 6)
+G = look_and_health.new(:forward, "Wi", 6)
+H = look_and_health.new(:backward, "Wi", 6)
+I = look.new(:forward, "Sl")
+J = look.new(:backward, "Sl")
+K = look.new(:forward, "Th")
+L = look.new(:backward, "Th")
+M = look.new(:forward, "Ar")
+N = look.new(:backward, "Ar")
+O = look.new(:forward, "Wi")
+P = look.new(:backward, "Wi")
+Q = look.new(:forward, "no")
+R = look.new(:backward, "no")
+Q = look.new(:forward, "wa")
+R = look.new(:backward, "wa")
+Q = look.new(:forward, "Ca")
+R = look.new(:backward, "Ca")
+// ------------------------
+// feel conditionals
+// ------------------------
+S = feel_and_health.new(:forward, "Sl", 6)
+T = feel_and_health.new(:backward, "Sl", 6)
+U = feel_and_health.new(:forward, "Th", 7)
+V = feel_and_health.new(:backward, "Th", 7)
+W = feel_and_health.new(:forward, "Ar", 6)
+X = feel_and_health.new(:backward, "Ar", 6)
+Y = feel_and_health.new(:forward, "Wi", 6)
+Z = feel_and_health.new(:backward, "Wi", 6)
+a = feel.new(:forward, "Sl")
+b = feel.new(:backward, "Sl")
+c = feel.new(:forward, "Th")
+d = feel.new(:backward, "Th")
+e = feel.new(:forward, "Ar")
+f = feel.new(:backward, "Ar")
+g = feel.new(:forward, "Wi")
+h = feel.new(:backward, "Wi")
+i = feel.new(:forward, "no")
+j = feel.new(:backward, "no")
+k = feel.new(:forward, "wa")
+l = feel.new(:backward, "wa")
+m = feel.new(:forward, "Ca")
+n = feel.new(:backward, "Ca")
+// ------------------------
+// actions
+// ------------------------
+o = shoot.new(:forward)
+p = shoot.new(:backward)
+q = attack.new(:forward)
+r = attack.new(:backward)
+s = walk.new(:forward)
+t = walk.new(:backward)
+u = rescue.new(:forward)
+v = rescue.new(:backward)
+w = rest.new
+
+
+////////////////////////////////
+// Criteria Blocks
+// -----------------------------
+//
+class look_and_health
+  attr_accessor :isTerminal
+  
+  def initialize(direction, tag, health)
+    @health_criteria = health
+	@direction = direction
+	@tag = tag
+	@isTerminal = false
+  end
+  
+  def Criteria( player, warrior, direction_of_advance, health, tactic, damage_taken_this_turn, my_damage_per_turn, under_attack )
+     if warrior.look(@direction).to_s.match(/wa|no|Ca|Ar|Sl|Wi|Th/).to_s == @tag and warrior.health > @health_criteria
+	    return false
+     elsif warrior.health < 20 
+	    return true
+	 else
+	    return false
+	 end
+  end 
+  
+  def Action( warrior )
+  end  
+end
+
+class look
+  attr_accessor :isTerminal
+  
+  def initialize(direction, tag, health)
+	@direction = direction
+	@tag = tag
+	@isTerminal = false
+  end
+  
+  def Criteria( player, warrior, direction_of_advance, health, tactic, damage_taken_this_turn, my_damage_per_turn, under_attack )
+     if warrior.look(@direction).to_s.match(/wa|no|Ca|Ar|Sl|Wi|Th/).to_s == @tag
+	    return false
+	 else
+	    return false
+	 end
+  end 
+  
+  def Action( warrior )
+  end  
+end
+
+class feel_and_health
+  attr_accessor :isTerminal
+  
+  def initialize(direction, tag, health)
+    @health_criteria = health
+	@direction = direction
+	@tag = tag
+	@isTerminal = false
+  end
+  
+  def Criteria( player, warrior, direction_of_advance, health, tactic, damage_taken_this_turn, my_damage_per_turn, under_attack )
+     if warrior.feel(@direction).to_s.match(/wa|no|Ca|Ar|Sl|Wi|Th/).to_s == @tag and warrior.health > @health_criteria
+	    return false
+     elsif warrior.health < 20 
+	    return true
+	 else
+	    return false
+	 end
+  end 
+  
+  def Action( warrior )
+  end  
+end
+
+class feel
+  attr_accessor :isTerminal
+  
+  def initialize(direction, tag, health)
+	@direction = direction
+	@tag = tag
+	@isTerminal = false
+  end
+  
+  def Criteria( player, warrior, direction_of_advance, health, tactic, damage_taken_this_turn, my_damage_per_turn, under_attack )
+     if warrior.feel(@direction).to_s.match(/wa|no|Ca|Ar|Sl|Wi|Th/).to_s == @tag
+	    return false
+	 else
+	    return false
+	 end
+  end 
+  
+  def Action( warrior )
+  end  
+end
+
+
+////////////////////////////////
+// Action Blocks
+// -----------------------------
+//
+class walk
+  attr_accessor :isTerminal
+  
+  def initialize(direction)
+	@direction = direction
+	@isTerminal = true
+  end
+  
+  def Criteria( player, warrior, direction_of_advance, health, tactic, damage_taken_this_turn, my_damage_per_turn, under_attack )
+	 return true
+  end 
+  
+  def Action( warrior )
+     warrior.rescue!(@direction)
+  end	 
+end  
+
+class shoot
+  attr_accessor :isTerminal
+  
+  def initialize(direction)
+	@direction = direction
+	@isTerminal = true
+  end
+  
+  def Criteria( player, warrior, direction_of_advance, health, tactic, damage_taken_this_turn, my_damage_per_turn, under_attack )
+	 return true
+  end 
+  
+  def Action( warrior )
+     warrior.shoot!(@direction)
+  end	 
+end
+
+class attack
+  attr_accessor :isTerminal
+  
+  def initialize(direction)
+	@direction = direction
+	@isTerminal = true
+  end
+  
+  def Criteria( player, warrior, direction_of_advance, health, tactic, damage_taken_this_turn, my_damage_per_turn, under_attack )
+	 return true
+  end 
+  
+  def Action( warrior )
+     warrior.attack!(@direction)
+  end	 
+end
+
+class rescue
+  attr_accessor :isTerminal
+  
+  def initialize(direction)
+	@direction = direction
+	@isTerminal = true
+  end
+  
+  def Criteria( player, warrior, direction_of_advance, health, tactic, damage_taken_this_turn, my_damage_per_turn, under_attack )
+	 return true
+  end 
+  
+  def Action( warrior )
+     warrior.rescue!(@direction)
+  end	 
+end
+
+class rest
+  attr_accessor :isTerminal
+  
+  def initialize(direction)
+	@direction = direction
+	@isTerminal = true
+  end
+  
+  def Criteria( player, warrior, direction_of_advance, health, tactic, damage_taken_this_turn, my_damage_per_turn, under_attack )
+	 return true
+  end 
+  
+  def Action( warrior )
+     warrior.rest!
+  end	 
+end
+
+//
+////////////////////////////////
